@@ -22,8 +22,9 @@
     "rimraf": "./node_modules/rimraf/bin.js"
   },
   "dependencies": {
-    "@nestjs/common": "^7.6.18",
-    "@nestjs/core": "^7.6.18",
+    "@nestjs/common": "^8.0.1",
+    "@nestjs/config": "^1.0.1",
+    "@nestjs/core": "^8.0.1",
     "@nestjs/mapped-types": "^1.0.0",
     "@nestjs/passport": "^8.0.1",
     "@nestjs/platform-express": "^7.6.15",

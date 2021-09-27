@@ -34,7 +34,7 @@ yarn-error.log
 /benchmarks/memory
 build/config\.gypi
 
-dist/
-.env
-
-firebase.config.json
+dist/
+.env
+
+firebase.config.json
