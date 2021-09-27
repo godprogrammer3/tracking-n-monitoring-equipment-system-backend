@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, Timestamp  } from "typeorm";
-import "reflect-metadata";
+
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
@@ -33,10 +33,10 @@ export class User {
     ban_status: string;
 
     @Column()
-    created_at: Timestamp;
+    created_at: Date;
 
     @Column()
-    updated_at: Timestamp;
+    updated_at: Date;
 
     @Column()
     updated_by: number;
