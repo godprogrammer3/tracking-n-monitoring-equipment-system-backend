@@ -1,6 +1,5 @@
-import internal from "stream";
 import { Entity, Column, PrimaryGeneratedColumn, Timestamp  } from "typeorm";
-
+import "reflect-metadata";
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
