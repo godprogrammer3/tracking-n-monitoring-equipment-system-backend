@@ -8,6 +8,8 @@ import { FirebaseAdminModule } from '@tfarras/nestjs-firebase-admin';
 import * as admin from 'firebase-admin';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SendGridModule } from '@anchan828/nest-sendgrid';
+import { AuthenticationModule } from './authentication/authentication.module';
+import { SharedModule } from './shared/shared.module';
 @Module({
   imports: [ConfigModule.forRoot()],
   imports: [
@@ -15,9 +17,7 @@ import { SendGridModule } from '@anchan828/nest-sendgrid';
     UsersModule,
     FirebaseAdminModule.forRootAsync({
       useFactory: () => ({
-        credential: admin.credential.cert(
-          'D:\\study\\4-1\\project\\repo\\backend\\src\\config\\firebase.config.json',
-        ),
+        credential: admin.credential.cert(process.env.FIREBASE_CREDENTIAL_PATH),
       }),
     }),
     TypeOrmModule.forRootAsync({
@@ -35,6 +35,8 @@ import { SendGridModule } from '@anchan828/nest-sendgrid';
     SendGridModule.forRoot({
       apikey: process.env.SEND_GRID_ACCESS_KEY,
     }),
+    AuthenticationModule,
+    SharedModule,
   ],
   controllers: [AppController],
   providers: [AppService],
