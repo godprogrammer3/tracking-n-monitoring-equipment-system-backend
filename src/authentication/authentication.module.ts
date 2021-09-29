@@ -3,11 +3,11 @@ import { PassportModule } from '@nestjs/passport';
 import { UsersModule } from 'src/users/users.module';
 import { AuthenticationController } from './authentication.controller';
 import { AuthenticationService } from './authentication.service';
-import { FirebaseAuthStrategy } from './firebase-auth.strategy';
+import { FirebaseStrategy } from './firebase-auth.strategy';
 
 @Module({
   imports: [UsersModule, PassportModule],
-  controllers: [AuthenticationController], 
-  providers: [AuthenticationService,FirebaseAuthStrategy]
+  controllers: [AuthenticationController],
+  providers: [AuthenticationService, FirebaseStrategy],
 })
 export class AuthenticationModule {}
