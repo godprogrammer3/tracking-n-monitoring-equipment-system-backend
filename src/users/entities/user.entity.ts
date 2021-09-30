@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 
 @Entity()
 export class User {
@@ -12,19 +12,22 @@ export class User {
   lastName: string;
 
   @Column()
-  tel: string;
-
-  @Column()
   email: string;
-
-  @Column()
-  birth_date: Date;
 
   @Column()
   password: string;
 
   @Column()
-  face_id: number;
+  tel: string;
+
+  @Column()
+  sex: string;
+  
+  @Column()
+  birth_date: Date;
+
+  @Column()
+  face_id: string;
 
   @Column()
   profile_pic: string;
@@ -32,12 +35,13 @@ export class User {
   @Column()
   ban_status: string;
 
-  @Column()
+  @CreateDateColumn()
   created_at: Date;
 
-  @Column()
+  @UpdateDateColumn()
   updated_at: Date;
 
-  @Column()
-  updated_by: number;
+  @ManyToOne(type => User)
+  @JoinColumn({ name: "updated_by"})
+  user: User;
 }

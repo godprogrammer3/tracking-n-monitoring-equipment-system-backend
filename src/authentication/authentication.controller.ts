@@ -14,7 +14,7 @@ export class AuthenticationController {
   @Put('send-mail')
   async sendMail(): Promise<any> {
     const result = await this.sendGrid.send({
-      to: 'game47you@gmail.com',
+      to: 'supreeyafon22@gmail.com',
       from: '61010103@kmitl.ac.th',
       subject: 'Sending with SendGrid is Fun',
       text: 'and easy to do anywhere, even with Node.js',

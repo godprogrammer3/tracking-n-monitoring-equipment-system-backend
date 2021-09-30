@@ -4,15 +4,14 @@ export class CreateUserDto {
     id:number;
     firstName:string;
     lastName:string;
-    tel:string;
     email: string;
-    birth_date: Date;
     password: string;
-    face_id: number;
+    tel:string;    
+    sex: string;
+    birth_date: Date;
+    face_id: string;
     profile_pic: string;
     ban_status: string;
-    created_at: Timestamp;
-    updated_at: Timestamp;
-    updated_by: number;
-
+    created_at: Date;
+    updated_at: Date;
 }

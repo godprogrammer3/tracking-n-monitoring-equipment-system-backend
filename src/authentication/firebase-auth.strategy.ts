@@ -10,7 +10,7 @@ import {
 @Injectable()
 export class FirebaseStrategy extends PassportStrategy(
   FirebaseAuthStrategy,
-  'firebase-auth',
+  'firebase',
 ) {
   public constructor(
     @Inject(FIREBASE_ADMIN_INJECT) private firebaseAdmin: FirebaseAdminSDK,
@@ -20,6 +20,7 @@ export class FirebaseStrategy extends PassportStrategy(
     });
   }
   async validate(token: any): Promise<any> {
+    console.log("token",token);
     const firebaseUser = await this.firebaseAdmin
       .auth()
       .verifyIdToken(token, true)
@@ -27,6 +28,7 @@ export class FirebaseStrategy extends PassportStrategy(
         console.log(err);
         throw new UnauthorizedException(err.message);
       });
+      console.log(firebaseUser);
     if (!firebaseUser) {
       throw new UnauthorizedException();
     }

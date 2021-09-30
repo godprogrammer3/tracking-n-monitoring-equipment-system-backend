@@ -3,7 +3,7 @@ import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
-export class FirebaseAuthGuard extends AuthGuard('firebase-auth') {
+export class FirebaseAuthGuard extends AuthGuard('firebase') {
   constructor(private reflector: Reflector) {
     super();
   }
@@ -12,6 +12,7 @@ export class FirebaseAuthGuard extends AuthGuard('firebase-auth') {
       context.getHandler(),
       context.getClass(),
     ]);
+    console.log("isPublic",isPublic);
     if (isPublic) {
       return true;
     }
