@@ -11,7 +11,6 @@ import { SendGridModule } from '@anchan828/nest-sendgrid';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { SharedModule } from './shared/shared.module';
 @Module({
-  imports: [ConfigModule.forRoot()],
   imports: [
     ConfigModule.forRoot(),
     UsersModule,

@@ -12,7 +12,6 @@ export class FirebaseAuthGuard extends AuthGuard('firebase') {
       context.getHandler(),
       context.getClass(),
     ]);
-    console.log("isPublic",isPublic);
     if (isPublic) {
       return true;
     }

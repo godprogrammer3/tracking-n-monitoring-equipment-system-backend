@@ -1,7 +1,10 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt } from 'passport-jwt';
-import { FirebaseAuthStrategy } from '@tfarras/nestjs-firebase-auth';
+import {
+  FirebaseAuthStrategy,
+  FirebaseUser,
+} from '@tfarras/nestjs-firebase-auth';
 import {
   FirebaseAdminSDK,
   FIREBASE_ADMIN_INJECT,
@@ -19,19 +22,9 @@ export class FirebaseStrategy extends PassportStrategy(
       extractor: ExtractJwt.fromAuthHeaderAsBearerToken(),
     });
   }
-  async validate(token: any): Promise<any> {
-    console.log("token",token);
-    const firebaseUser = await this.firebaseAdmin
-      .auth()
-      .verifyIdToken(token, true)
-      .catch((err) => {
-        console.log(err);
-        throw new UnauthorizedException(err.message);
-      });
-      console.log(firebaseUser);
-    if (!firebaseUser) {
-      throw new UnauthorizedException();
-    }
-    return firebaseUser;
+  async validate(user: FirebaseUser): Promise<any> {
+    console.log('user:', user);
+    console.log('phone number:', user.phone_number)
+    return true;
   }
 }
