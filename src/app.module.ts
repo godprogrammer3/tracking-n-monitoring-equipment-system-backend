@@ -10,6 +10,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { SendGridModule } from '@anchan828/nest-sendgrid';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { SharedModule } from './shared/shared.module';
+import { DepartmentModule } from './department/department.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -36,6 +37,7 @@ import { SharedModule } from './shared/shared.module';
     }),
     AuthenticationModule,
     SharedModule,
+    DepartmentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

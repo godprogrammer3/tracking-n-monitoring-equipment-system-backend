@@ -1,5 +1,6 @@
 var firebase = require('firebase/app');
 
+
 // TODO: Replace the following with your app's Firebase project configuration
 const firebaseConfig = {
   apiKey: 'AIzaSyAF-1vDsV-NU7ihvojiw7uLYhbico8pA6g',
@@ -14,14 +15,20 @@ const app = firebase.initializeApp(firebaseConfig);
 var auth = require('firebase/auth');
 const sign = auth.getAuth();
 auth
-  .signInWithEmailAndPassword(sign, 'spy@email.com', '123456789')
+  .signInWithEmailAndPassword(sign, 'supreeyafon22@gmail.com', '123456789')
   .then(async (userCredential) => {
     // Signed in
     const user = userCredential.user;
     console.log('user', await user.getIdToken());
-    // ...
+    
+    //send emailveification
+    /*await auth.sendEmailVerification(auth.getAuth().currentUser)
+    .then(() => {
+      console.log('send successful');
+    })*/
   })
   .catch((error) => {
     const errorCode = error.code;
     const errorMessage = error.message;
   });
+

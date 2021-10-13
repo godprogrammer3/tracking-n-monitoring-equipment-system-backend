@@ -1,4 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import { Role } from "./role.entity";
+import { Department } from 'src/department/entities/department.entity';
 
 @Entity()
 export class User {
@@ -13,9 +15,6 @@ export class User {
 
   @Column()
   email: string;
-
-  @Column()
-  password: string;
 
   @Column()
   tel: string;
@@ -33,7 +32,7 @@ export class User {
   profile_pic: string;
 
   @Column()
-  ban_status: string;
+  status: string;
 
   @CreateDateColumn()
   created_at: Date;
@@ -44,4 +43,11 @@ export class User {
   @ManyToOne(type => User)
   @JoinColumn({ name: "updated_by"})
   user: User;
+
+  @ManyToOne(() => Role, role => role.users)
+  role: Role;
+
+  @ManyToOne(() => Department,dept => dept.users)
+  dept: Department;
+
 }

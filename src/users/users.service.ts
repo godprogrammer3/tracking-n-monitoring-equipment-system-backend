@@ -8,15 +8,25 @@ import { UpdateUserDto } from './dto/update-user.dto';
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User) private usersRepository: Repository<User>,
+    @InjectRepository(User) 
+    private usersRepository: Repository<User>
   ) {}
 
   findAll(): Promise<User[]> {
     return this.usersRepository.find();
   }
 
-  findOne(id: string): Promise<User> {
+  findOne(id: number): Promise<User> {
     return this.usersRepository.findOne(id);
+  }
+
+  async findByEmail(email: string) {
+    const user = await this.usersRepository.findOne({
+      where: {
+        email,
+      },
+    });
+    return user;
   }
 
   async remove(id: string): Promise<void> {
@@ -28,7 +38,9 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
-  async updateUser(id: string, updateUserDto: UpdateUserDto) {
+  async updateUser(id: number, updateUserDto: UpdateUserDto) {
     return this.usersRepository.save({ ...updateUserDto, id: Number(id) });
   }
+
+
 }
