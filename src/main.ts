@@ -1,9 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { RedisIoAdapter } from './redis/redis.adapter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.useWebSocketAdapter(new RedisIoAdapter(app))
+  app.enableCors();
   const config = new DocumentBuilder()
     .setTitle('Toollo API')
     .setDescription('The Toollo API description')
