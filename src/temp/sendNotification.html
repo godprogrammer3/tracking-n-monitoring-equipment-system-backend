@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAF-1vDsV-NU7ihvojiw7uLYhbico8pA6g",
+            authDomain: "trackingandmonitoringsystem.firebaseapp.com",
+            projectId: "trackingandmonitoringsystem",
+            storageBucket: "trackingandmonitoringsystem.appspot.com",
+            messagingSenderId: "896495303491",
+            appId: "1:896495303491:web:c085781b02c5c5968bcdf6"
+        };
+        var payload = {
+            notification: {
+                title: 'Hello',
+                body: 'World'
+            },
+            data: {
+                score: '850',
+                time: '2:45'
+            }
+        }
+        var app = firebase.initializeApp(firebaseConfig);
+        const messaging = firebase.messaging();
+        /*messaging.requestPermission()
+            .then(function () {
+                console.log('Have Permission');
+                return messaging.getToken();
+            })
+            .then(function (token) {
+                console.log(token);
+            })
+            .catch(function (err) {
+                console.log('Error Occured.');
+            })
+
+        messaging.onMessage((payload) => {
+            console.log('Message received. ', payload);
+        })*/
+
+        messaging.requestPermission()
+        .then(function() {
+            messaging.getToken({ vapidKey: 'BGsau8-CqwNgf6zub3U1OvULG0N7XcChO_1P7dcXabpRD1MMA87dheTw08mAQ7a54elciCt1Mw7LSQB6FfSolmE' })
+            .then(function(currentToken) {
+                if(currentToken) {
+                    console.log(currentToken);
+                    //sendTokenToServer(currentToken);
+                }
+                else {
+                    console.log('No instant ID');
+                }
+            })
+        })
+
+        messaging.onMessage((payload) => {
+            console.log('Message received. ', payload);
+        })
+    </script>
+</head>
+
+<body>
+    <button> send </button>
+</body>
