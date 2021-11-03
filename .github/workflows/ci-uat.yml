@@ -26,8 +26,10 @@ jobs:
         run: git -C $(echo ${{secrets.REPO_ENV_PATH}} | base64 --decode) pull
       - name: replace new env 
         run: cp "$(echo ${{secrets.APP_ENV_PATH}} | base64 --decode)/.env" ./
-      - name: pm2 start process
-        run: pm2 delete -s uat || ':' & pm2 start "$(echo ${{secrets.APP_PATH}} | base64 --decode)/dist/main.js" --name uat
+      - name: pm2 delete old process
+        run: pm2 delete -s uat || ':' 
+      - name: pm2 start new process  
+        run: pm2 start "$(echo ${{secrets.APP_PATH}} | base64 --decode)/dist/main.js" --name uat
       - name: pm2 save process to run as startup
         run: pm2 save
      
