@@ -1,4 +1,11 @@
 {
   "collection": "@nestjs/schematics",
-  "sourceRoot": "src"
+  "sourceRoot": "src",
+  "compilerOptions": {
+    "assets": [
+        "face-recognition/face-images/**/*",
+        "face-recognition/models/**/*",
+        "face-recognition/face-images-test/**/*"
+    ]
+}
 }
