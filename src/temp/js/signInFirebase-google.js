@@ -24,6 +24,11 @@ auth
     // The signed-in user info.
     const user = result.user;
     console.log('user:', user);
+
+    await auth.sendEmailVerification(auth.getAuth().currentUser)
+    .then(() => {
+      console.log('send successful');
+    })
     // ...
   }).catch((error) => {
     // Handle Errors here.

@@ -1,6 +1,7 @@
 import { SendGridService } from '@anchan828/nest-sendgrid';
 import { Controller, Get, Put, UseGuards,Request, Body, Post} from '@nestjs/common';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { UpdateUserDto } from 'src/users/dto/update-user.dto';
 import { AuthenticationService } from './authentication.service';
 import { FirebaseAuthGuard } from './authenttication.guard';
 
@@ -12,12 +13,12 @@ export class AuthenticationController {
     ){}
   @UseGuards(FirebaseAuthGuard)
   @Get('/signin')
-  signIn(@Request() req): Promise<any> {
-    return this.service.signIn(req.user.email,req.user.email_verified);
+  signIn(@Request() req, @Body() userDto: UpdateUserDto): Promise<any> {
+    return this.service.signIn(req.user,userDto.fcm_token);
   }
 
   @UseGuards(FirebaseAuthGuard)
-  @Post('register')
+  @Post('/register')
   register(@Body() createUserDto: CreateUserDto): Promise<any> {
     return this.service.register(createUserDto);
   }
@@ -40,5 +41,11 @@ export class AuthenticationController {
       html: '<strong>and easy to do anywhere, even with Node.js</strong>',
     });
     return result;
+  }
+
+  @UseGuards(FirebaseAuthGuard)
+  @Get('/send-noti')
+  sendNoti(): Promise<any>{
+    return this.service.sendNoti();
   }
 }

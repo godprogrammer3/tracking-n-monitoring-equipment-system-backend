@@ -7,11 +7,17 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { SendGridService } from '@anchan828/nest-sendgrid';
+import { Roles } from './roles.decorator';
+import { RolesGuard } from './roles.guard';
+import { AuthGuard } from '@nestjs/passport';
+import { FirebaseAuthGuard } from 'src/authentication/authenttication.guard';
 
 
 @Controller('users')
@@ -20,15 +26,16 @@ export class UsersController {
     private service: UsersService,
     private readonly sendGrid: SendGridService,
   ) {}
-
+  //@Roles('super_admin')
+  @UseGuards(RolesGuard)
   @Get()
   findAll() {
     return this.service.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param() params) {
-    return this.service.findOne(params.id);
+  @Get('findbyId/:id')
+  findById(@Param() params) {
+    return this.service.findById(params.id);
   }
 
   @Post()
@@ -36,14 +43,20 @@ export class UsersController {
     return this.service.createUser(CreateUserDto);
   }
 
-  @Put(':id')
+  @Put('updatebyId/:id')
   update(@Param() params, @Body() updateUserDto: UpdateUserDto) {
     return this.service.updateUser(params.id, updateUserDto);
   }
 
-  @Delete(':id')
-  deleteUser(@Param() params) {
-    return this.service.remove(params.id);
+  @UseGuards(FirebaseAuthGuard,RolesGuard)
+  @Delete('remove/:id')
+  deleteUser(@Request() req ,@Param() params) {
+    return this.service.remove(params.id,req.user);
+  }
+
+  @Get('findRole/:id')
+  findRole(@Param() params) {
+    return this.service.findRole(params.id);
   }
 
   @Put('send-mail')
@@ -56,5 +69,25 @@ export class UsersController {
       html: '<strong>and easy to do anywhere, even with Node.js</strong>',
     });
     return result;
+  }
+
+  @Get('findByRole')
+  async findByRole(): Promise<any> {
+    const role: string[] = ['super_admin','admin']; 
+    return this.service.findByRole(role, 1);
+  }
+
+  
+  @UseGuards(FirebaseAuthGuard,RolesGuard)
+  @Roles('super_admin','admin')
+  @Put('/approve/:id')
+  approve(@Request() req, @Param() params) {
+    console.log('user',params.id);
+    return this.service.approve(params.id,req.user);
+  }
+
+  @Get('getUser')
+  viewUser(@Body() id: string[]) {
+    console.log('id', id[0]);
   }
 }

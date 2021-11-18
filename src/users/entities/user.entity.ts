@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import { IsDate, IsEmail, IsNotEmpty, Length } from "class-validator";
 import { Role } from "./role.entity";
 import { Department } from 'src/department/entities/department.entity';
 
@@ -8,31 +9,46 @@ export class User {
   id: number;
 
   @Column()
+  @IsNotEmpty()
   firstName: string;
 
   @Column()
+  @IsNotEmpty()
   lastName: string;
 
   @Column()
+  @IsNotEmpty()
+  @IsEmail()
   email: string;
 
   @Column()
+  @IsNotEmpty()
+  status: string;
+
+  @Column()
+  fcm_token: string;
+
+  @Column()
+  @IsNotEmpty()
+  @Length(10)
   tel: string;
 
   @Column()
-  sex: string;
+  @IsNotEmpty()
+  gender: string;
   
   @Column()
+  @IsDate()
+  @IsNotEmpty()
   birth_date: Date;
 
   @Column()
+  @IsNotEmpty()
   face_id: string;
 
   @Column()
+  @IsNotEmpty()
   profile_pic: string;
-
-  @Column()
-  status: string;
 
   @CreateDateColumn()
   created_at: Date;
@@ -51,3 +67,5 @@ export class User {
   dept: Department;
 
 }
+
+
