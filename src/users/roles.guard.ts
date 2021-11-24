@@ -12,7 +12,6 @@ export class RolesGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     var roles = this.reflector.get<string[]>('roles', context.getHandler());
     console.log('role', roles);
-    const id = 1;
     let user;
     let hasPermission = false;
     const request = context.switchToHttp().getRequest();
@@ -31,37 +30,80 @@ export class RolesGuard implements CanActivate {
         console.log(error);
       })
 
-      if ( roles === undefined) {
-        const actorDB = await this.UsersService.findByEmail(user.email);
-        if (actorDB.id === id) {
-          hasPermission = true;
-          console.log('5555');
-        }
-        else {
-          if (actorDB.role.role == 'super_admin') {
-            hasPermission = true;
-          }
-          else if (actorDB.role.role == 'admin' || actorDB.role.role == 'master_maintainer') {
-            const userDB = await this.UsersService.findById(id);
-            if (actorDB.dept.id === userDB.dept.id) {
-              hasPermission = true;
-              console.log('654');
-            }
-          }
-        }
-      }
-   /* const hasRole = roles.includes(user.role);
-    if(hasRole) {
-      if(user.role == 'super_admin') {
+    const id = request.params.id;
+    console.log('id', id);
+    const actorDB = await this.UsersService.findByEmail(user.email);
+    if (roles === undefined) {
+      if (actorDB.id == id) {
         hasPermission = true;
+        console.log('5555');
       }
-      else {
-        
+      else if (actorDB.role.role == 'super_admin') {
+        hasPermission = true;
+        console.log('super');
+      }
+      else if (actorDB.role.role == 'admin' ) {
+        const userDB = await this.UsersService.findById(id);
+        if (actorDB.dept.id === userDB.dept.id && userDB.role.id != 1) {
+          hasPermission = true;
+          console.log('admin');
+        }
+      }
+      else if (actorDB.role.role == 'master_maintainer'){
+        const userDB = await this.UsersService.findById(id);
+        if (actorDB.dept.id === userDB.dept.id && (userDB.role.id == 3 || userDB.role.id == 4)) {
+          hasPermission = true;
+          console.log('master');
+        }
       }
     }
-    console.log('header',hasRole);*/
-
+    else {
+      if (actorDB.role.role == 'super_admin') {
+        hasPermission = true;
+        console.log('super');
+      }
+      else if (actorDB.role.role == 'admin' ) {
+        const userDB = await this.UsersService.findById(id);
+        if (actorDB.dept.id == userDB.dept.id && userDB.role.id != 1) {
+          hasPermission = true;
+          console.log('admin');
+        }
+      }
+      else if (actorDB.role.role == 'master_maintainer'){
+        const userDB = await this.UsersService.findById(id);
+        if (actorDB.dept.id === userDB.dept.id && (userDB.role.id == 3 || userDB.role.id == 4)) {
+          hasPermission = true;
+          console.log('master');
+        }
+      }
+    }
+    request.actor = actorDB; 
+    console.log('permission', hasPermission);
 
     return hasPermission;
   }
 }
+
+/*async function checkPermission (id: number, actorDB: any) {
+
+  let hasPermission = false;
+  if (actorDB.role.role == 'super_admin') {
+    hasPermission = true;
+    console.log('super');
+  }
+  else if (actorDB.role.role == 'admin' ) {
+    const userDB = await this.UsersService.findById(id);
+    if (actorDB.dept.id === userDB.dept.id && userDB.role.id != 1) {
+      hasPermission = true;
+      console.log('admin');
+    }
+  }
+  else if (actorDB.role.role == 'master_maintainer'){
+    const userDB = await this.UsersService.findById(id);
+    if (actorDB.dept.id === userDB.dept.id && (userDB.role.id == 3 || userDB.role.id == 4)) {
+      hasPermission = true;
+      console.log('master');
+    }
+  }
+  return hasPermission;
+}*/

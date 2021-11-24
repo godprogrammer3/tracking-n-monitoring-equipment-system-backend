@@ -1,5 +1,8 @@
 import { IsDate, IsEmail, IsNotEmpty, IsString, Length, Matches } from "class-validator";
+import { Department } from "src/department/entities/department.entity";
 import { Timestamp } from "typeorm";
+import { Role } from "../entities/role.entity";
+import { User } from "../entities/user.entity";
 
 
 export class CreateUserDto {
@@ -36,12 +39,13 @@ export class CreateUserDto {
     @IsNotEmpty()
     profile_pic: string;
 
-    /*@IsNotEmpty()
+    @IsNotEmpty()
     roleId: number;
 
     @IsNotEmpty()
-    deptId: number;*/
+    deptId: number;
 
     /*created_at: Date;
     updated_at: Date;*/
+    //updated_by: User;
 }

@@ -46,5 +46,23 @@ const ResponseConstants: ResponseDto[] = [
         errorCode: '04',
         message: 'can not signin',
         data: {},
+    },
+    {
+        successful: false,
+        errorCode: '05',
+        message: 'can not approve',
+        data: {},
+    },
+    {
+        successful: false,
+        errorCode: '06',
+        message: `user isn't blocked`,
+        data: {},
+    },
+    {
+        successful: false,
+        errorCode: '07',
+        message: `user has been already blocked`,
+        data: {},
     }
 ]

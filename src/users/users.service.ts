@@ -11,6 +11,8 @@ import { resourceLimits } from 'worker_threads';
 import { SendGridService } from '@anchan828/nest-sendgrid';
 import * as admin from 'firebase-admin';
 import { getResponse } from 'src/utils/response';
+import e from 'express';
+import { CreateByAdmin } from './dto/create-by-admin.dto';
 
 @Injectable()
 export class UsersService {
@@ -33,6 +35,14 @@ export class UsersService {
     });
   }
 
+  async viewUser(id: number[]) {
+    const users = await this.usersRepository.find({
+      where: {id: In(id)},
+      relations: ['role','dept']
+    })
+    return new HttpException(getResponse('00',users),HttpStatus.OK);
+  }
+
   async findByEmail(email: string) {
     const user = await this.usersRepository.findOne({
       where: {
@@ -43,16 +53,8 @@ export class UsersService {
     return user;
   }
 
-  async remove(id: number , actor: any) {
-    const actorDB = await this.findByEmail(actor.email);
+  async remove(id: number) {
     const user = await this.findById(id);
-    if (id !== actorDB.id) {
-      if (actor.role != 'super_admin') {
-        if (actorDB.dept.id != user.dept.id) {
-          throw new HttpException('fdsf',HttpStatus.FORBIDDEN);
-        }
-      }
-    }
     const result = await admin.auth().getUserByEmail(user.email);
     await admin.auth().deleteUser(result.uid);
     await this.usersRepository.delete(id);
@@ -64,8 +66,16 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
+  async createByAdmin(createByAdmin: CreateByAdmin) {
+    const user = this.usersRepository.create(createByAdmin);
+    const result = this.usersRepository.merge(user, {status: "Approved"});
+    console.log(result);
+     //this.usersRepository.save(result);
+     return new HttpException(getResponse('00',null),HttpStatus.OK);
+  }
+
   async updateUser(id: number, updateUserDto: UpdateUserDto) {
-    return this.usersRepository.save({ ...updateUserDto, id: Number(id) });
+    return this.usersRepository.save({ ...updateUserDto,updated_by: 2, id: Number(id) });
   }
 
   async findRole(id: number) {
@@ -91,24 +101,20 @@ export class UsersService {
     return result;
   }
 
-  async approve(id: number, actor: any) {
+  async approve(id: number, actorId: number) {
     const user = await this.usersRepository.findOne({
       where: {id: id},
       relations: ['dept'],
     });
-    if (actor.role != 'super_admin'){
-      const actorDB = await this.usersRepository.findOne({
-        where: {email: actor.email},
-        relations: ['dept']
-      })
-      if (actorDB.dept.id != user.dept.id) {
-        throw new HttpException('dfsdf',HttpStatus.FORBIDDEN);
-      }
-    }
-    this.updateUser(id,{'status': 'Approved'});
+    if(user.status == 'WaitingForApprove') {
+      this.usersRepository.update(id, {status: "Approved"});
     this.sendNotiToOne(user.fcm_token);
     this.sendMail(user.email);
     return new HttpException(getResponse('00',null),HttpStatus.OK);
+    }
+    else {
+      return new HttpException(getResponse('05',null),HttpStatus.FORBIDDEN);
+    }
   }
 
 
@@ -140,39 +146,31 @@ export class UsersService {
      });
  }
 
-  async block(id: number, actor: any) {
+  async block(id: number) {
     const user = await this.usersRepository.findOne({
       where: {id: id},
       relations: ['dept'],
     });
-    if (actor.role != 'super_admin'){
-      const actorDB = await this.usersRepository.findOne({
-        where: {email: actor.email},
-        relations: ['dept']
-      })
-      if (actorDB.dept.id != user.dept.id) {
-        throw new HttpException('dfsdf',HttpStatus.FORBIDDEN);
-      }
+    if (user.status == 'Blocked') {
+      return new HttpException(getResponse('07',null),HttpStatus.FORBIDDEN);
     }
-    this.updateUser(id,{'status': 'Blocked'});
-    return new HttpException(getResponse('00',null),HttpStatus.OK)
+    else {
+      this.updateUser(id,{'status': 'Blocked'});
+    return new HttpException(getResponse('00',null),HttpStatus.OK);
+    }
   }
 
-  async unBlock(id: number, actor: any) {
+  async unBlock(id: number) {
     const user = await this.usersRepository.findOne({
       where: {id: id},
       relations: ['dept'],
     });
-    if (actor.role != 'super_admin'){
-      const actorDB = await this.usersRepository.findOne({
-        where: {email: actor.email},
-        relations: ['dept']
-      })
-      if (actorDB.dept.id != user.dept.id) {
-        throw new HttpException('dfsdf',HttpStatus.FORBIDDEN);
-      }
+    if (user.status == 'Blocked') {
+      this.updateUser(id,{'status': 'SignnedOut'});
+      return new HttpException(getResponse('00',null),HttpStatus.OK);
     }
-    this.updateUser(id,{'status': 'Unblocked'});
-    return new HttpException(getResponse('00',null),HttpStatus.OK);
+    else {
+      return new HttpException(getResponse('06',null),HttpStatus.FORBIDDEN);
+    }
   }
 }
