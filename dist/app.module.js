@@ -7,11 +7,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
+const config_1 = require("@nestjs/config");
 const common_1 = require("@nestjs/common");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const users_module_1 = require("./users/users.module");
-const config_1 = require("@nestjs/config");
 const nestjs_firebase_admin_1 = require("@tfarras/nestjs-firebase-admin");
 const admin = require("firebase-admin");
 const typeorm_1 = require("@nestjs/typeorm");
