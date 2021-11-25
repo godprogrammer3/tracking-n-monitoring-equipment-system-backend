@@ -10,26 +10,27 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
+      - name: pull env
+        run: git -C $(echo ${{secrets.REPO_ENV_PATH}} | base64 --decode) pull
+      - name: copy config file
+        run: cp -r "$(echo ${{secrets.APP_ENV_PATH}} | base64 --decode)/." ./src/config
       - name: run ci
-        run: npm ci 
+        run: npm ci
       - name: run build
         run: npm run build
       - name: clean previous version
-        run: rm -rf $(echo ${{secrets.APP_PATH}} | base64 --decode) 
+        run: rm -rf $(echo ${{secrets.APP_PATH}} | base64 --decode)
       - name: create dir
         run: mkdir $(echo ${{secrets.APP_PATH}} | base64 --decode)
       - name: copy node modules
         run: cp -R ./node_modules/ "$(echo ${{secrets.APP_PATH}} | base64 --decode)/node_modules"
       - name: deploy new version
         run: cp -R ./dist/ "$(echo ${{secrets.APP_PATH}} | base64 --decode)/dist"
-      - name: pull env
-        run: git -C $(echo ${{secrets.REPO_ENV_PATH}} | base64 --decode) pull
-      - name: replace new env 
+      - name: replace new env
         run: cp "$(echo ${{secrets.APP_ENV_PATH}} | base64 --decode)/.env" ./
       - name: pm2 delete old process
-        run: pm2 delete -s prod || ':' 
-      - name: pm2 start new process  
+        run: pm2 delete -s prod || ':'
+      - name: pm2 start new process
         run: pm2 start "$(echo ${{secrets.APP_PATH}} | base64 --decode)/dist/main.js" --name prod
       - name: pm2 save process to run as startup
         run: pm2 save
-     
