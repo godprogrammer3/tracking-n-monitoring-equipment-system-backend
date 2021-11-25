@@ -10,6 +10,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
+      - name: pull env
+        run: git -C $(echo ${{secrets.REPO_ENV_PATH}} | base64 --decode) pull
+      - name: copy config file
+        run: cp "$(echo ${{secrets.APP_ENV_PATH}} | base64 --decode)/*" ./src/config
       - name: run ci
         run: npm ci
       - name: run build
@@ -22,12 +26,8 @@ jobs:
         run: cp -R ./node_modules/ "$(echo ${{secrets.APP_PATH}} | base64 --decode)/node_modules"
       - name: deploy new version
         run: cp -R ./dist/ "$(echo ${{secrets.APP_PATH}} | base64 --decode)/dist"
-      - name: pull env
-        run: git -C $(echo ${{secrets.REPO_ENV_PATH}} | base64 --decode) pull
       - name: replace new env
         run: cp "$(echo ${{secrets.APP_ENV_PATH}} | base64 --decode)/.env" ./
-      - name: copy config file
-        run: cp "$(echo ${{secrets.APP_ENV_PATH}} | base64 --decode)/*" "$(echo ${{secrets.APP_PATH}} | base64 --decode)/dist/config"
       - name: pm2 delete old process
         run: pm2 delete -s sit || ':'
       - name: pm2 start new process
