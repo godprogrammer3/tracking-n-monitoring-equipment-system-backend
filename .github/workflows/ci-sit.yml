@@ -13,7 +13,7 @@ jobs:
       - name: pull env
         run: git -C $(echo ${{secrets.REPO_ENV_PATH}} | base64 --decode) pull
       - name: copy config file
-        run: cp "$(echo ${{secrets.APP_ENV_PATH}} | base64 --decode)/*" ./src/config
+        run: cp -R "$(echo ${{secrets.APP_ENV_PATH}} | base64 --decode)" ./src/config
       - name: run ci
         run: npm ci
       - name: run build
