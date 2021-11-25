@@ -10,13 +10,16 @@ import { SendGridModule } from '@anchan828/nest-sendgrid';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { SharedModule } from './shared/shared.module';
 import { DepartmentModule } from './department/department.module';
+import * as FirebaseServiceAccount from './config/firebase.config.json';
 @Module({
   imports: [
     ConfigModule.forRoot(),
     UsersModule,
     FirebaseAdminModule.forRootAsync({
       useFactory: () => ({
-        credential: admin.credential.cert(process.env.FIREBASE_CREDENTIAL_PATH),
+        credential: admin.credential.cert(
+          FirebaseServiceAccount as admin.ServiceAccount,
+        ),
       }),
     }),
     TypeOrmModule.forRootAsync({
