@@ -1,0 +1,42 @@
+import { HttpException } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { User } from './entities/user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { SendGridService } from '@anchan828/nest-sendgrid';
+import { CreateByAdmin } from './dto/create-by-admin.dto';
+export declare class UsersService {
+    private usersRepository;
+    private readonly sendGrid;
+    constructor(usersRepository: Repository<User>, sendGrid: SendGridService);
+    findAll(): Promise<User[]>;
+    findById(id: number): Promise<User>;
+    viewUser(id: number[]): Promise<HttpException>;
+    findByEmail(email: string): Promise<User>;
+    remove(id: number): Promise<HttpException>;
+    createUser(createUserDto: CreateUserDto): Promise<User>;
+    createByAdmin(createByAdmin: CreateByAdmin): Promise<HttpException>;
+    updateUser(id: number, updateUserDto: UpdateUserDto): Promise<{
+        updated_by: number;
+        id: number;
+        firstName?: string;
+        lastName?: string;
+        email?: string;
+        status?: string;
+        fcm_token?: string;
+        tel?: string;
+        gender?: string;
+        birth_date?: Date;
+        face_id?: string;
+        profile_pic?: string;
+        roleId?: number;
+        deptId?: number;
+    } & User>;
+    findRole(id: number): Promise<import("./entities/role.entity").UserRole>;
+    findByRole(role: string[], dept_id: number): Promise<User[]>;
+    approve(id: number, actorId: number): Promise<HttpException>;
+    sendMail(email: string): Promise<any>;
+    sendNotiToOne(token: string): Promise<any>;
+    block(id: number): Promise<HttpException>;
+    unBlock(id: number): Promise<HttpException>;
+}

@@ -1,3 +1,4 @@
+import { ValidationPipe } from '@nestjs/common';
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -5,6 +6,7 @@ import { AppModule } from './app.module';
 const logger = new Logger('main');
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(new ValidationPipe())
   const config = new DocumentBuilder()
     .setTitle('Toollo API')
     .setDescription('The Toollo API description')

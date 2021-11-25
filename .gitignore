@@ -35,6 +35,6 @@ yarn-error.log
 build/config\.gypi
 
 dist/
-.env
 
 firebase.config.json
+*.env
