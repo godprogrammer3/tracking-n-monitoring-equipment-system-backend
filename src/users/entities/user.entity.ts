@@ -1,6 +1,15 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
-import { IsDate, IsEmail, IsNotEmpty, Length } from "class-validator";
-import { Role } from "./role.entity";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
+  OneToMany,
+} from 'typeorm';
+import { IsDate, IsEmail, IsNotEmpty, Length } from 'class-validator';
+import { Role } from './role.entity';
 import { Department } from 'src/department/entities/department.entity';
 
 @Entity()
@@ -36,7 +45,7 @@ export class User {
   @Column()
   @IsNotEmpty()
   gender: string;
-  
+
   @Column()
   @IsDate()
   @IsNotEmpty()
@@ -56,16 +65,9 @@ export class User {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @ManyToOne(type => User)
-  @JoinColumn({ name: "updated_by"})
-  user: User;
-
-  @ManyToOne(() => Role, role => role.users)
+  @ManyToOne(() => Role, (role) => role.users)
   role: Role;
 
-  @ManyToOne(() => Department,dept => dept.users)
+  @ManyToOne(() => Department, (dept) => dept.users)
   dept: Department;
-
 }
-
-
