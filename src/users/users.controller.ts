@@ -37,12 +37,12 @@ export class UsersController {
   }
 
   
-  //@UseGuards(RolesGuard)
-  //@Roles('super_admin','admin')
-  /*@Post('/createUser')
+  @UseGuards(RolesGuard)
+  @Roles('super_admin','admin')
+  @Post('/createUser')
   create(@Body() createByAdmin: CreateByAdmin) {
     return this.service.createByAdmin(createByAdmin);
-  }*/
+  }
 
   @UseGuards(RolesGuard)
   @Put('updatebyId/:id')
@@ -91,9 +91,9 @@ export class UsersController {
     return this.service.unBlock(params.id);
   }
 
-  /*@UseGuards(RolesGuard)
+  @UseGuards(RolesGuard)
   @Get('/viewUser/:id')
   view(@Param() params) {
     return this.service.viewUser(params.id);
-  }*/
+  }
 }
