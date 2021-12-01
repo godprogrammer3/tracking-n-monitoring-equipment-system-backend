@@ -1,5 +1,6 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { User } from "src/users/entities/user.entity"
+import { type, userInfo } from "os";
 
 @Entity()
 export class Department {
@@ -15,8 +16,20 @@ export class Department {
     @UpdateDateColumn()
     updated_at: Date;
 
-    @OneToMany(() => User, user => user.dept)
+    @OneToMany(() => User, (user) => user.dept)
     users: User[];
 
+    @ManyToOne(type => User , {nullable: false})
+    @JoinColumn({
+        name: 'created_by',
+        referencedColumnName: 'id'
+    })
+    created_by: User;
 
+     @ManyToOne(type => User, {nullable: false})
+     @JoinColumn({
+         name: 'updated_by',
+         referencedColumnName: 'id'
+     })
+     updated_by: User;
 }

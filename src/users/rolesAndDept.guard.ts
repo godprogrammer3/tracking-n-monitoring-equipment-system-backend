@@ -5,7 +5,7 @@ import { UsersService } from "./users.service";
 
 
 @Injectable()
-export class RolesGuard implements CanActivate {
+export class RolesAndDeptGuard implements CanActivate {
   constructor(
     @Inject(UsersService) private readonly UsersService,
     private reflector: Reflector) { }
@@ -14,6 +14,7 @@ export class RolesGuard implements CanActivate {
     console.log('role', roles);
     let user;
     let hasPermission = false;
+    let permissionFound = false;
     const request = context.switchToHttp().getRequest();
 
     const headerAuthorization = request.headers.authorization;
@@ -73,6 +74,10 @@ export class RolesGuard implements CanActivate {
       }
     }
     else {
+      permissionFound = roles.includes(actorDB.role.role); 
+    }
+
+    if (permissionFound) {
       let result = {
         role: body.role , 
         dept: body.dept
@@ -83,11 +88,11 @@ export class RolesGuard implements CanActivate {
         result.dept = user.dept.id;
         console.log('checkByParams',result);
       }
-      if (actorDB.role.role == 'super_admin') {
+      if (actorDB.role.role == 'super_admin' ) {
         hasPermission = true;
         console.log('super');
       }
-      else if (actorDB.role.role == 'admin') {
+      else if (actorDB.role.role == 'admin' ) {
         if (actorDB.dept.id == result.dept && (result.role == 2 || result.role == 5)) {
           hasPermission = true;
           console.log('admin');

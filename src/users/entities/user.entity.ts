@@ -11,6 +11,7 @@ import {
 import { IsDate, IsEmail, IsNotEmpty, Length } from 'class-validator';
 import { Role } from './role.entity';
 import { Department } from 'src/department/entities/department.entity';
+import { type } from 'os';
 
 @Entity()
 export class User {
@@ -18,45 +19,33 @@ export class User {
   id: number;
 
   @Column()
-  @IsNotEmpty()
   firstName: string;
 
   @Column()
-  @IsNotEmpty()
   lastName: string;
 
   @Column()
-  @IsNotEmpty()
-  @IsEmail()
   email: string;
 
   @Column()
-  @IsNotEmpty()
   status: string;
 
   @Column()
   fcm_token: string;
 
   @Column()
-  @IsNotEmpty()
-  @Length(10)
   tel: string;
 
   @Column()
-  @IsNotEmpty()
   gender: string;
 
-  @Column()
-  @IsDate()
-  @IsNotEmpty()
+  @Column({ type: Date})
   birth_date: Date;
 
   @Column()
-  @IsNotEmpty()
   face_id: string;
 
   @Column()
-  @IsNotEmpty()
   profile_pic: string;
 
   @CreateDateColumn()
@@ -70,4 +59,11 @@ export class User {
 
   @ManyToOne(() => Department, (dept) => dept.users)
   dept: Department;
+
+  @ManyToOne(type => User)
+  @JoinColumn({
+    name: 'updated_by',
+    referencedColumnName: 'id'
+  })
+  updated_by: User;
 }

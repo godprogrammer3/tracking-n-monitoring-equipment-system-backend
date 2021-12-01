@@ -15,7 +15,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { SendGridService } from '@anchan828/nest-sendgrid';
 import { Roles } from './roles.decorator';
-import { RolesGuard } from './roles.guard';
+import { RolesAndDeptGuard } from './rolesAndDept.guard';
 import { AuthGuard } from '@nestjs/passport';
 import { FirebaseAuthGuard } from 'src/authentication/authenttication.guard';
 import { Role } from './entities/role.entity';
@@ -29,7 +29,7 @@ export class UsersController {
     private readonly sendGrid: SendGridService,
   ) {}
 
-  @UseGuards(RolesGuard)
+  @UseGuards(RolesAndDeptGuard)
   @Roles('super_admin')
   @Get()
   findAll() {
@@ -37,20 +37,20 @@ export class UsersController {
   }
 
   
-  @UseGuards(RolesGuard)
+  @UseGuards(RolesAndDeptGuard)
   @Roles('super_admin','admin')
   @Post('/createUser')
-  create(@Body() createByAdmin: CreateByAdmin) {
-    return this.service.createByAdmin(createByAdmin);
+  create(@Request() req, @Body() createByAdmin: CreateByAdmin) {
+    return this.service.createByAdmin(createByAdmin, req.actor.id);
   }
 
-  @UseGuards(RolesGuard)
+  @UseGuards(RolesAndDeptGuard)
   @Put('updatebyId/:id')
-  update(@Param() params, @Body() updateUserDto: UpdateUserDto) {
-    return this.service.updateUser(params.id, updateUserDto);
+  update(@Request() req, @Param() params, @Body() updateUserDto: UpdateUserDto) {
+    return this.service.updateUser(params.id, updateUserDto, req.actor.id);
   }
 
-  @UseGuards(RolesGuard)
+  @UseGuards(RolesAndDeptGuard)
   @Delete('remove/:id')
   removeUser(@Param() params) {
     return this.service.remove(params.id,);
@@ -70,28 +70,28 @@ export class UsersController {
   }
 
   
-  @UseGuards(RolesGuard)
+  @UseGuards(RolesAndDeptGuard)
   @Roles('super_admin','admin')
   @Put('/approve/:id')
   approve(@Request() req, @Param() params) {
     return this.service.approve(params.id,req.actor.id);
   }
 
-  @UseGuards(RolesGuard)
+  @UseGuards(RolesAndDeptGuard)
   @Roles('super_admin','admin')
   @Put('block/:id')
-  block(@Param() params) {
-    return this.service.block(params.id);
+  block(@Request() req, @Param() params) {
+    return this.service.block(params.id, req.actor.id);
   }
 
-  @UseGuards(RolesGuard)
+  @UseGuards(RolesAndDeptGuard)
   @Roles('super_admin','admin')
   @Put('unblock/:id')
-  unBlock(@Param() params) {
-    return this.service.unBlock(params.id);
+  unBlock(@Request() req, @Param() params) {
+    return this.service.unBlock(params.id, req.actor.id);
   }
 
-  @UseGuards(RolesGuard)
+  @UseGuards(RolesAndDeptGuard)
   @Get('/viewUser/:id')
   view(@Param() params) {
     return this.service.viewUser(params.id);

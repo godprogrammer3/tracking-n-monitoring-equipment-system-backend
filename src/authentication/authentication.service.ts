@@ -34,14 +34,18 @@ export class AuthenticationService {
       await this.usersService.updateUser(result.id, {
         status: 'Signingin',
         fcm_token: fcm_token,
-      });
+      },
+      result.id
+      );
       result = await this.usersService.findById(result.id);
       throw new HttpException(getResponse('00', result), HttpStatus.OK);
     } else if (result.status == 'SignedOut') {
       await this.usersService.updateUser(result.id, {
         status: 'Signingin',
         fcm_token: fcm_token,
-      });
+      },
+      result.id
+      );
       result = await this.usersService.findById(result.id);
       throw new HttpException(getResponse('00', result), HttpStatus.OK);
     } else
@@ -53,7 +57,7 @@ export class AuthenticationService {
     console.log(result);
     if (result) {
       if (result.status == 'Approved') {
-        this.usersService.updateUser(result.id, userDto);
+        await this.usersService.updateUser(result.id, userDto, result.id);
         result = await this.usersService.findById(result.id);
         console.log('response', getResponse('00', result));
         throw new HttpException(getResponse('00', result), HttpStatus.OK);
@@ -64,7 +68,9 @@ export class AuthenticationService {
       const user = await this.usersService.createUser(userDto);
       this.usersService.updateUser(user.id, {
         status: 'WaitingForValidateEmail',
-      });
+      },
+      user.id
+      );
       result = await this.usersService.findById(user.id);
       const getAdmin = await this.usersService.findByRole(
         ['super_admin', 'admin'],
@@ -95,10 +101,12 @@ export class AuthenticationService {
 
   async signOut(email: string): Promise<any> {
     const result = await this.usersService.findByEmail(email);
-    this.usersService.updateUser(result.id, {
+    await this.usersService.updateUser(result.id, {
       status: 'SignedOut',
       fcm_token: null,
-    });
+    },
+    result.id
+    );
     throw new HttpException(getResponse('00', null), HttpStatus.OK);
   }
 

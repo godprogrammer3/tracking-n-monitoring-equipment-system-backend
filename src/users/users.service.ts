@@ -1,17 +1,13 @@
-import { HttpCode, HttpException, HttpStatus, Injectable, Options } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Options } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { createConnection, getRepository, In } from 'typeorm';
+import { In } from 'typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Role } from './entities/role.entity';
-import { connect } from 'http2';
-import { resourceLimits } from 'worker_threads';
 import { SendGridService } from '@anchan828/nest-sendgrid';
 import * as admin from 'firebase-admin';
 import { getResponse } from 'src/utils/response';
-import e from 'express';
 import { CreateByAdmin } from './dto/create-by-admin.dto';
 
 @Injectable()
@@ -36,13 +32,13 @@ export class UsersService {
   }
 
   async viewUser(ids: string) {
-    console.log('view',typeof(ids[0]));
+    console.log('view', typeof (ids[0]));
     var idsToNumber = ids.split(',').map(Number);
     const users = await this.usersRepository.find({
       where: {
         id: In(idsToNumber)
       },
-      relations: ['role', 'dept']
+      relations: ['role', 'dept','updated_by']
     })
     throw new HttpException(getResponse('00', users), HttpStatus.OK);
   }
@@ -70,21 +66,25 @@ export class UsersService {
     throw this.usersRepository.save(user);
   }
 
-  async createByAdmin(createByAdmin: CreateByAdmin) {
+  async createByAdmin(createByAdmin: CreateByAdmin, actorId) {
     for (let i = 0; i < createByAdmin.email.length; i++) {
       const user = this.usersRepository.create({
         email: createByAdmin.email[i],
         status: 'Approved',
         role: createByAdmin.role,
-        dept: createByAdmin.dept
+        dept: createByAdmin.dept,
+        updated_by: actorId
       });
-      this.usersRepository.save(user);
-      throw new HttpException(getResponse('00', null), HttpStatus.OK);
+      await this.usersRepository.save(user);
     }
+    throw new HttpException(getResponse('00', null), HttpStatus.OK);
   }
 
-  async updateUser(id: number, updateUserDto: UpdateUserDto) {
-    return this.usersRepository.save({ ...updateUserDto, id: Number(id) });
+  async updateUser(id: number, updateUserDto: UpdateUserDto, actorId) {
+    this.usersRepository.save({ ...updateUserDto, id: Number(id), updated_by: actorId });
+    const result = this.usersRepository.findOne(id);
+    //return result;
+    throw new HttpException(getResponse('00', result), HttpStatus.OK);
   }
 
   async findRole(id: number) {
@@ -110,14 +110,15 @@ export class UsersService {
     return result;
   }
 
-  async approve(id: number, actorId: number) {
+  async approve(id: number, actorId) {
     const user = await this.usersRepository.findOne({
       where: { id: id },
       relations: ['dept'],
     });
     if (user.status == 'WaitingForApprove') {
       this.usersRepository.update(id, {
-        status: 'Approved'
+        status: 'Approved',
+        updated_by: actorId
       });
       this.sendNotiToOne(user.fcm_token);
       this.sendMail(user.email);
@@ -157,7 +158,7 @@ export class UsersService {
       });
   }
 
-  async block(id: number) {
+  async block(id: number, actorId) {
     const user = await this.usersRepository.findOne({
       where: { id: id },
       relations: ['dept'],
@@ -166,18 +167,24 @@ export class UsersService {
       throw new HttpException(getResponse('07', null), HttpStatus.FORBIDDEN);
     }
     else {
-      this.updateUser(id, { 'status': 'Blocked' });
+      this.usersRepository.update(id, {
+        status: 'Blocked',
+        updated_by: actorId
+      });
       throw new HttpException(getResponse('00', null), HttpStatus.OK);
     }
   }
 
-  async unBlock(id: number) {
+  async unBlock(id: number, actorId) {
     const user = await this.usersRepository.findOne({
       where: { id: id },
       relations: ['dept'],
     });
     if (user.status == 'Blocked') {
-      this.updateUser(id, { 'status': 'SignedOut' });
+      this.usersRepository.update(id, {
+        status: 'SignedOut',
+        updated_by: actorId
+      });
       throw new HttpException(getResponse('00', null), HttpStatus.OK);
     }
     else {
