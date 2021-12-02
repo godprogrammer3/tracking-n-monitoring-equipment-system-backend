@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { VideoService } from './video.service';
-import { LockerGateway } from './locker.gateway';
+import { VideoGateway } from './video.gateway';
 
 @Module({
-  providers: [LockerGateway, VideoService],
+  providers: [VideoGateway, VideoService],
 })
 export class VideoModule {}

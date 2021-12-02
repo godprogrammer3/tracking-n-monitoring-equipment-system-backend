@@ -10,8 +10,8 @@ import {
 } from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
-@WebSocketGateway({ cors: true, namespace: '/locker' })
-export class LockerGateway
+@WebSocketGateway({ cors: true, namespace: '/video' })
+export class VideoGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
   private logger: Logger = new Logger('LockerGateway');
