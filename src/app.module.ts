@@ -1,3 +1,4 @@
+import { VideoGateway } from './video/video.gateway';
 import { Locker } from './entities/locker.entity';
 import { ConfigModule } from '@nestjs/config';
 import { Module } from '@nestjs/common';
@@ -25,6 +26,6 @@ import { VideoModule } from './video/video.module';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, VideoGateway],
 })
 export class AppModule {}
