@@ -40,7 +40,7 @@ export class UsersService {
       },
       relations: ['role', 'dept','updated_by']
     })
-    throw new HttpException(getResponse('00', users), HttpStatus.OK);
+    return getResponse('00', users);
   }
 
   async findByEmail(email: string) {
@@ -58,7 +58,7 @@ export class UsersService {
     const result = await admin.auth().getUserByEmail(user.email);
     await admin.auth().deleteUser(result.uid);
     await this.usersRepository.delete(id);
-    throw new HttpException(getResponse('00', null), HttpStatus.OK);
+    return getResponse('00', null);
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
@@ -77,14 +77,14 @@ export class UsersService {
       });
       await this.usersRepository.save(user);
     }
-    throw new HttpException(getResponse('00', null), HttpStatus.OK);
+    return getResponse('00', null);
   }
 
   async updateUser(id: number, updateUserDto: UpdateUserDto, actorId) {
     this.usersRepository.save({ ...updateUserDto, id: Number(id), updated_by: actorId });
     const result = this.usersRepository.findOne(id);
     //return result;
-    throw new HttpException(getResponse('00', result), HttpStatus.OK);
+    return getResponse('00', result);
   }
 
   async findRole(id: number) {
@@ -122,7 +122,7 @@ export class UsersService {
       });
       this.sendNotiToOne(user.fcm_token);
       this.sendMail(user.email);
-      throw new HttpException(getResponse('00', null), HttpStatus.OK);
+      return getResponse('00', null);
     }
     else {
       throw new HttpException(getResponse('05', null), HttpStatus.FORBIDDEN);
@@ -144,7 +144,7 @@ export class UsersService {
   async sendNotiToOne(token: string): Promise<any> {
     const message = {
       notification: {
-        title: 'test',
+        title: 'Your account has been approved',
         body: '12345'
       },
       token: token
@@ -171,7 +171,7 @@ export class UsersService {
         status: 'Blocked',
         updated_by: actorId
       });
-      throw new HttpException(getResponse('00', null), HttpStatus.OK);
+      return getResponse('00', null);
     }
   }
 
@@ -185,7 +185,7 @@ export class UsersService {
         status: 'SignedOut',
         updated_by: actorId
       });
-      throw new HttpException(getResponse('00', null), HttpStatus.OK);
+      return getResponse('00', null);
     }
     else {
       throw new HttpException(getResponse('06', null), HttpStatus.FORBIDDEN);

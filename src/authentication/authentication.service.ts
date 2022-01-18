@@ -47,7 +47,7 @@ export class AuthenticationService {
       result.id
       );
       result = await this.usersService.findById(result.id);
-      throw new HttpException(getResponse('00', result), HttpStatus.OK);
+      return getResponse('00', result);
     } else
       throw new HttpException(getResponse('04', null), HttpStatus.FORBIDDEN);
   }
@@ -60,7 +60,7 @@ export class AuthenticationService {
         await this.usersService.updateUser(result.id, userDto, result.id);
         result = await this.usersService.findById(result.id);
         console.log('response', getResponse('00', result));
-        throw new HttpException(getResponse('00', result), HttpStatus.OK);
+        return getResponse('00', result);
       }
       /* else {
         return getResponse('01',null);}*/
@@ -81,7 +81,7 @@ export class AuthenticationService {
       console.log('tokens', tokens);
       const message = {
         notification: {
-          title: 'test',
+          title: 'Register Successful',
           body: '12345',
         },
         tokens: tokens,
@@ -95,7 +95,7 @@ export class AuthenticationService {
         .catch((error) => {
           console.log('Error sending message:', error);
         });
-      throw new HttpException(getResponse('00', user), HttpStatus.OK);
+     return getResponse('00', user);
     }
   }
 
@@ -107,7 +107,7 @@ export class AuthenticationService {
     },
     result.id
     );
-    throw new HttpException(getResponse('00', null), HttpStatus.OK);
+    return getResponse('00', null);
   }
 
   async sendMail(): Promise<any> {
