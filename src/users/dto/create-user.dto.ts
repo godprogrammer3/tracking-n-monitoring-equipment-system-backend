@@ -40,10 +40,10 @@ export class CreateUserDto {
     profile_pic: string;
 
     @IsNotEmpty()
-    roleId: number;
+    role: Role;
 
     @IsNotEmpty()
-    deptId: number;
+    dept: Department;
 
     /*created_at: Date;
     updated_at: Date;*/
