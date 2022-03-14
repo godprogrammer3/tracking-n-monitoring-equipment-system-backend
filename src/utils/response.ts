@@ -116,19 +116,19 @@ const ResponseConstants: ResponseDto[] = [
     {
         successful: false,
         errorCode: '16',
-        message: 'cannot create this temporaryDept ',
+        message: 'do not have this tempDept ',
         data: {},
     },
     {
         successful: false,
         errorCode: '17',
-        message: 'cannot add temporaryUser ',
+        message: 'user already exist in locker ',
         data: {},
     },
     {
         successful: false,
         errorCode: '18',
-        message: 'cannot create this temporaryUser ',
+        message: 'cannot add temporaryUser ',
         data: {},
     },
     {
@@ -140,7 +140,20 @@ const ResponseConstants: ResponseDto[] = [
     {
         successful: false,
         errorCode: '20',
-        message: 'token do not n=match with this locker',
+        message: 'token do not match with this locker',
         data: {},
     },
+    {
+        successful: false,
+        errorCode: '21',
+        message: 'do not have this tempUser',
+        data: {},
+    },
+    {
+        successful: false,
+        errorCode: '22',
+        message: 'do not have this tempDept',
+        data: {},
+    },
+    
 ]

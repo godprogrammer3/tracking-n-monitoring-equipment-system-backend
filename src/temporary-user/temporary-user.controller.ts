@@ -6,6 +6,7 @@ import { RolesAndLockerGuard } from 'src/utils/guard/rolesAndLocker.guard';
 import { Roles } from 'src/utils/guard/roles.decorator';
 
 @UseGuards(RolesAndLockerGuard)
+
 @Controller('lockers/temp-user')
 export class TemporaryUserController {
   constructor(private readonly temporaryUserService: TemporaryUserService) {}
@@ -31,6 +32,7 @@ export class TemporaryUserController {
     return this.temporaryUserService.update(+locker, +user , updateTemporaryUserDto);
   }
 
+  @Roles('super_admin', 'admin')
   @Delete(':locker/:user')
   remove(@Param('locker') locker: string, @Param('user') user: string) {
     return this.temporaryUserService.remove(+locker, +user);

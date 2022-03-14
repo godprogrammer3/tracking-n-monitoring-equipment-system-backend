@@ -22,16 +22,20 @@ export class TemporaryUserService {
     let userInfo = await this.usersService.findById(Number(createTemporaryUserDto.user));
     if (userInfo) {
       let lockerDept = await this.lockersService.findDept(lockerInfo.locker_id);
-      if (lockerDept.includes(userInfo.dept) ) {
-        throw new HttpException(getResponse('17', null), HttpStatus.FORBIDDEN);
+      console.log('test', lockerDept);
+      for (let i = 0; i < lockerDept.length; i++) {
+        console.log('gh',userInfo.dept);
+        if (lockerDept[i].id == userInfo.dept.id) {
+          throw new HttpException(getResponse('17', null), HttpStatus.FORBIDDEN);
+        }
       }
-      let tempDept = this.tempUserRepository.create({
-        start_date: createTemporaryUserDto.start_date,
-        end_date: createTemporaryUserDto.end_date,
-        user: userInfo,
-        locker: lockerInfo
-      });
-      await this.tempUserRepository.save(tempDept);
+       let tempDept = this.tempUserRepository.create({
+         start_date: createTemporaryUserDto.start_date,
+         end_date: createTemporaryUserDto.end_date,
+         user: userInfo,
+         locker: lockerInfo
+       });
+       await this.tempUserRepository.save(tempDept);
       return getResponse('00', null);
     }
     throw new HttpException(getResponse('18', null), HttpStatus.FORBIDDEN);
@@ -57,7 +61,7 @@ export class TemporaryUserService {
     if (result) {
       return getResponse('00', result);
     }
-    throw new HttpException(getResponse('18', null), HttpStatus.FORBIDDEN);
+    throw new HttpException(getResponse('21', null), HttpStatus.FORBIDDEN);
   }
 
   async update(lockerId: number, userId: number, updateTemporaryUserDto: UpdateTemporaryUserDto) {
@@ -68,7 +72,7 @@ export class TemporaryUserService {
       return this.findOne(lockerId, userId);
     }
 
-    throw new HttpException(getResponse('18', null), HttpStatus.FORBIDDEN);
+    throw new HttpException(getResponse('21', null), HttpStatus.FORBIDDEN);
   }
 
   async remove(lockerId: number, userId: number) {
@@ -83,7 +87,7 @@ export class TemporaryUserService {
       await this.tempUserRepository.remove(result);
       return getResponse('00', result);
     }
-    throw new HttpException(getResponse('18', null), HttpStatus.FORBIDDEN);
+    throw new HttpException(getResponse('21', null), HttpStatus.FORBIDDEN);
   }
 
   async findtempUser(lockerId: string, userId: number) {

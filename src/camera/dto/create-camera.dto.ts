@@ -8,6 +8,5 @@ export class CreateCameraDto {
     @IsNotEmpty()
     recent_picture: string;
 
-    @IsNotEmpty()
     locker: Locker;
 }

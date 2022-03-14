@@ -12,6 +12,5 @@ export class CreateTemporaryDeptDto {
     @IsNotEmpty()
     department: Department;
 
-    @IsNotEmpty()
     locker: Locker;
 }

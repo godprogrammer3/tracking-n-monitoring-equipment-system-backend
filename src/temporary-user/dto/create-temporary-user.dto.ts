@@ -13,6 +13,5 @@ export class CreateTemporaryUserDto {
     @IsNotEmpty()
     user: User;
 
-    @IsNotEmpty()
     locker: Locker;
 }
