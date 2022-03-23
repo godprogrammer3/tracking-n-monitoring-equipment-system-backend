@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
+  <script>
+    // Import the functions you need from the SDKs you need
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAF-1vDsV-NU7ihvojiw7uLYhbico8pA6g",
+      authDomain: "trackingandmonitoringsystem.firebaseapp.com",
+      projectId: "trackingandmonitoringsystem",
+      storageBucket: "trackingandmonitoringsystem.appspot.com",
+      messagingSenderId: "896495303491",
+      appId: "1:896495303491:web:c085781b02c5c5968bcdf6"
+    };
+
+    // Initialize Firebase
+    var app = firebase.initializeApp(firebaseConfig);
+    var provider = new firebase.auth.GoogleAuthProvider();
+
+    async function signIn() {
+      firebase.auth()
+        .signInWithPopup(provider)
+        .then((result) => {
+          /** @type {firebase.auth.OAuthCredential} */
+          var credential = result.credential;
+
+          // This gives you a Google Access Token. You can use it to access the Google API.
+          var token = credential.accessToken;
+          console.log('token:', token);
+          // The signed-in user info.
+          var user = result.user;
+          console.log('user:', user);
+          // ...
+        }).catch((error) => {
+          console.log('error:', error);
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          // The email of the user's account used.
+          var email = error.email;
+          // The firebase.auth.AuthCredential type that was used.
+          var credential = error.credential;
+          // ...
+        });
+    }
+    const messaging = firebase.messaging();
+    async function message() {
+      messaging.requestPermission()
+        .then(function () {
+          console.log('Have permission');
+        })
+        .catch(function (err) {
+          console.log('Error Occured.');
+        })
+    }
+
+  </script>
+</head>
+
+<body>
+  <div>
+    <input type="text" id="email">email<br>
+    <input type="text" id="password">password<br>
+    <button type="submit" onclick="signIn()">submit</button>
+    <button onclick="message()"> send </button>
+  </div>
+  <script>
+  </script>
+</body>
+
+</html>
